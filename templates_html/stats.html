@@ -5,14 +5,6 @@
 <div id="stats-content" style="display:none">
   <div class="stats" style="margin-bottom:1rem" id="stat-cards"></div>
   <div class="chart-wrap">
-    <div class="chart-title">Circulating supply over time</div>
-    <svg id="chart-supply" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div class="legend">
-      <span><span class="legend-dot" style="background:var(--green)"></span>Circulating</span>
-      <span><span class="legend-dot" style="background:var(--accent)"></span>Cumulative minted</span>
-    </div>
-  </div>
-  <div class="chart-wrap" style="margin-top:1.5rem">
     <div class="chart-title">Mint vs burn (cumulative)</div>
     <svg id="chart-mintburn" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg"></svg>
     <div class="legend">
@@ -95,12 +87,6 @@ fetch('/api/stats')
     const pts = data.points;
     if (!pts.length) return;
     const maxX = pts[pts.length - 1].height;
-    const maxY = Math.max(...pts.map(p => p.minted)) * 1.05 || 1;
-    drawChart('chart-supply', pts, [
-      {key: 'minted',      color: 'var(--accent)', width: 1},
-      {key: 'circulating', color: 'var(--green)',  width: 2},
-    ], maxX, maxY);
-
     const maxYBurn = Math.max(...pts.map(p => p.minted)) * 1.05 || 1;
     drawChart('chart-mintburn', pts, [
       {key: 'minted',      color: 'var(--accent)', width: 2},

@@ -82,13 +82,15 @@ class StatsAccumulator:
             # Incremental: one new block appended.
             blk    = chain[-1]
             fee    = sum(t["fee"] for t in blk.get("transactions", []))
+            prev_minted = self.points[-1]["minted"] if self.points else 0
+            reward = state.total_minted - prev_minted
             self._cum += fee
             self.points = self.points + [{
                 "height":      blk["height"],
                 "minted":      state.total_minted,
                 "burned_fees": self._cum,
                 "circulating": state.total_minted - self._cum,
-                "net_emission": fee,
+                "net_emission": reward - fee,
             }]
         else:
             # Full rebuild (startup, reorg, or first call).
@@ -106,7 +108,7 @@ class StatsAccumulator:
                     "minted":      running_minted,
                     "burned_fees": cum,
                     "circulating": running_minted - cum,
-                    "net_emission": fee,
+                    "net_emission": reward - fee,
                 })
             if len(points) > 500:
                 step   = len(points) / 500
